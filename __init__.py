@@ -4,7 +4,7 @@ from os.path import dirname, abspath, basename
 from adapt.intent import IntentBuilder
 from mycroft.messagebus.message import Message
 from mycroft.configuration import ConfigurationManager
-
+from mycroft.skills.audioservice import AudioService
 from os.path import dirname
 
 from mycroft.util.log import getLogger
@@ -26,19 +26,20 @@ class PlaybackControlSkill(MediaSkill):
         logger.info('initializing Playback Control Skill')
         super(PlaybackControlSkill, self).initialize()
         self.load_data_files(dirname(__file__))
+        self.audio_service = AudioService(self.emitter)
 
     def handle_next(self, message):
-        self.emitter.emit(Message('MycroftAudioServiceNext'))
+        self.audio_service.next()
 
     def handle_prev(self, message):
-        self.emitter.emit(Message('MycroftAudioServicePrev'))
+        self.audio_service.prev()
 
     def handle_pause(self, message):
-        self.emitter.emit(Message('MycroftAudioServicePause'))
+        self.audio_service.pause()
 
     def handle_play(self, message):
         """Resume playback if paused"""
-        self.emitter.emit(Message('MycroftAudioServiceResume'))
+        self.audio_service.resume()
 
     def handle_currently_playing(self, message):
         return
